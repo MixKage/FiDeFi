@@ -5,7 +5,6 @@ import 'package:fidefi/theme.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:macos_ui/macos_ui.dart';
-import 'package:provider/provider.dart';
 
 import 'bottom_navig_bar.dart';
 
@@ -25,19 +24,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => AppTheme(),
-      builder: (context, _) {
-        final appTheme = context.watch<AppTheme>();
-        return MacosApp(
-          title: 'FiDeFi',
-          theme: MacosThemeData.light(),
-          darkTheme: MacosThemeData.dark(),
-          themeMode: appTheme.mode,
-          debugShowCheckedModeBanner: false,
-          home: const MyHomePage(),
-        );
-      },
+    return MacosApp(
+      title: 'FiDeFi',
+      theme: MacosThemeData.light(),
+      darkTheme: MacosThemeData.dark(),
+      themeMode: ThemeMode.system,
+      debugShowCheckedModeBanner: false,
+      home: const MyHomePage(),
     );
   }
 }
