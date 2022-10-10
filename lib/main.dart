@@ -7,6 +7,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:desktop_window/desktop_window.dart';
 import 'package:provider/provider.dart';
 
+import 'bottom_navig_bar.dart';
+
 void main() {
   runApp(const MyApp());
 
@@ -50,11 +52,11 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool _enableButton = true;
   String? _selectedDirectory;
-  List files = List.empty(growable: true);
-  List<int> _selectedFiles = List.empty(growable: true);
+  List files = [];
+  List<int> _selectedFiles = [];
 
   Future<void> _openFolderPicker() async {
-    files = List.empty(growable: true);
+    files = [];
     _selectedDirectory = await FilePicker.platform.getDirectoryPath();
     if (_selectedDirectory != null) {
       //files = io.Directory("$_selectedDirectory/").listSync();
@@ -67,8 +69,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _setFilesFromFolder() async {
     if (_selectedDirectory != null) {
-      files = List.empty(growable: true);
-      _selectedFiles = List.empty(growable: true);
+      files = [];
+      _selectedFiles = [];
       var tmp = io.Directory("$_selectedDirectory/").listSync();
       List<String> extensions = textController.text.split(',');
       if (extensions.isNotEmpty && extensions[0] != "") {
@@ -97,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
     for (int index in _selectedFiles) {
       files[index].delete();
     }
-    _selectedFiles = List.empty(growable: true);
+    _selectedFiles = [];
     files = io.Directory("$_selectedDirectory/").listSync();
     setState(() {
       _enableButton = true;
@@ -127,6 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
       backgroundColor: MacosTheme.brightnessOf(context) == Brightness.dark
           ? MacosColors.underPageBackgroundColor
           : MacosColors.white,
+      bottomNavigationBar: BottomBar,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -197,39 +200,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         }),
               ),
             ),
-            Row(
-              children: [
-                const SizedBox(width: 5),
-                Expanded(
-                  child: MacosTextField(
-                    controller: textController,
-                    placeholder: 'Type some extension',
-                  ),
-                ),
-                const SizedBox(width: 5),
-                PushButton(
-                    buttonSize: ButtonSize.small,
-                    onPressed: !_enableButton
-                        ? null
-                        : () async {
-                            setState(() => _enableButton = false);
-                            _openFolderPicker();
-                          },
-                    child: const Text("Select folder")),
-                const SizedBox(width: 10),
-                PushButton(
-                    buttonSize: ButtonSize.small,
-                    onPressed: !_enableButton || files.isEmpty
-                        ? null
-                        : () async {
-                            _enableButton = false;
-                            _deleteSelectedFiles();
-                          },
-                    child: const Text("Delete")),
-                const SizedBox(width: 10),
-              ],
-            ),
-            const SizedBox(height: 10)
           ],
         ),
       ),
