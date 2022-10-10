@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:macos_ui/macos_ui.dart';
 
 class BottomBar extends StatelessWidget {
-  const BottomBar({super.key});
+  const BottomBar({
+    required this.textController,
+    required this.buttonCallback,
+    required this.enableButton,
+    super.key,
+  });
+  final TextEditingController textController;
+  final bool enableButton;
+  final VoidCallback buttonCallback;
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +26,7 @@ class BottomBar extends StatelessWidget {
         const SizedBox(width: 5),
         PushButton(
             buttonSize: ButtonSize.small,
-            onPressed: !_enableButton
-                ? null
-                : () async {
-                    setState(() => _enableButton = false);
-                    _openFolderPicker();
-                  },
+            onPressed: !enableButton ? null : buttonCallback,
             child: const Text("Select folder")),
         const SizedBox(width: 10),
         PushButton(

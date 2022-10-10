@@ -1,10 +1,10 @@
-import 'package:fidefi/theme.dart';
-import 'package:flutter/material.dart';
 import 'dart:io' as io;
 
-import 'package:macos_ui/macos_ui.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:desktop_window/desktop_window.dart';
+import 'package:fidefi/theme.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:macos_ui/macos_ui.dart';
 import 'package:provider/provider.dart';
 
 import 'bottom_navig_bar.dart';
@@ -129,7 +129,14 @@ class _MyHomePageState extends State<MyHomePage> {
       backgroundColor: MacosTheme.brightnessOf(context) == Brightness.dark
           ? MacosColors.underPageBackgroundColor
           : MacosColors.white,
-      bottomNavigationBar: BottomBar,
+      bottomNavigationBar: BottomBar(
+        enableButton: _enableButton,
+        textController: textController,
+        buttonCallback: () async {
+          setState(() => _enableButton = false);
+          _openFolderPicker();
+        },
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
