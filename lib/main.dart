@@ -1,20 +1,19 @@
 import 'dart:io' as io;
 
 import 'package:desktop_window/desktop_window.dart';
-import 'package:fidefi/theme.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:macos_ui/macos_ui.dart';
 
 import 'bottom_navig_bar.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await testWindowFunctions();
   runApp(const MyApp());
-
-  testWindowFunctions();
 }
 
-Future testWindowFunctions() async {
+Future<void> testWindowFunctions() async {
   await DesktopWindow.setWindowSize(const Size(330, 350));
   await DesktopWindow.setMinWindowSize(const Size(300, 300));
 }
