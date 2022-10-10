@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:macos_ui/macos_ui.dart';
 
@@ -6,11 +8,15 @@ class BottomBar extends StatelessWidget {
     required this.textController,
     required this.buttonCallback,
     required this.enableButton,
+    required this.files,
+    required this.deleteCallback,
     super.key,
   });
   final TextEditingController textController;
   final bool enableButton;
+  final List<FileSystemEntity> files;
   final VoidCallback buttonCallback;
+  final VoidCallback deleteCallback;
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +37,11 @@ class BottomBar extends StatelessWidget {
         const SizedBox(width: 10),
         PushButton(
             buttonSize: ButtonSize.small,
-            onPressed: !_enableButton || files.isEmpty
+            onPressed: !enableButton || files.isEmpty
                 ? null
                 : () async {
-                    _enableButton = false;
-                    _deleteSelectedFiles();
+                    //enableButton = false;
+                    deleteCallback();
                   },
             child: const Text("Delete")),
         const SizedBox(width: 10),

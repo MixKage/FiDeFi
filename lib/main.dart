@@ -1,4 +1,4 @@
-import 'dart:io' as io;
+import 'dart:io';
 
 import 'package:desktop_window/desktop_window.dart';
 import 'package:file_picker/file_picker.dart';
@@ -44,7 +44,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool _enableButton = true;
   String? _selectedDirectory;
-  List files = [];
+  List<FileSystemEntity> files = [];
   List<int> _selectedFiles = [];
 
   Future<void> _openFolderPicker() async {
@@ -63,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (_selectedDirectory != null) {
       files = [];
       _selectedFiles = [];
-      var tmp = io.Directory("$_selectedDirectory/").listSync();
+      var tmp = Directory("$_selectedDirectory/").listSync();
       List<String> extensions = textController.text.split(',');
       if (extensions.isNotEmpty && extensions[0] != "") {
         for (var element in tmp) {
@@ -87,16 +87,16 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  Future<void> _deleteSelectedFiles() async {
-    for (int index in _selectedFiles) {
-      files[index].delete();
-    }
-    _selectedFiles = [];
-    files = io.Directory("$_selectedDirectory/").listSync();
-    setState(() {
-      _enableButton = true;
-    });
-  }
+  // Future<void> _deleteSelectedFiles() async {
+  //   for (int index in _selectedFiles) {
+  //     files[index].delete();
+  //   }
+  //   _selectedFiles = [];
+  //   files = Directory("$_selectedDirectory/").listSync();
+  //   setState(() {
+  //     _enableButton = true;
+  //   });
+  // }
 
   final textController = TextEditingController();
 
@@ -121,13 +121,43 @@ class _MyHomePageState extends State<MyHomePage> {
       backgroundColor: MacosTheme.brightnessOf(context) == Brightness.dark
           ? MacosColors.underPageBackgroundColor
           : MacosColors.white,
-      bottomNavigationBar: BottomBar(
-        enableButton: _enableButton,
-        textController: textController,
-        buttonCallback: () async {
-          setState(() => _enableButton = false);
-          _openFolderPicker();
-        },
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(bottom: 5),
+        child: BottomBar(
+            enableButton: _enableButton,
+            textController: textController,
+            files: files,
+            buttonCallback: () async {
+              setState(() => _enableButton = false);
+              _openFolderPicker();
+            },
+            deleteCallback: () async {
+              for (int index in _selectedFiles) {
+                files[index].delete();
+              }
+              _selectedFiles = [];
+              files = [];
+              var tmp = Directory("$_selectedDirectory/").listSync();
+              List<String> extensions = textController.text.split(',');
+              if (extensions.isNotEmpty && extensions[0] != "") {
+                for (var element in tmp) {
+                  //Получаю расширение файла
+                  var extenFile = element.path.split('.');
+                  for (var ext in extensions) {
+                    //Проверяю с входным потоком необходимых расширений
+                    if (extenFile[extenFile.length - 1] == ext) {
+                      files.add(element);
+                      break;
+                    }
+                  }
+                }
+              } else {
+                files = tmp;
+              }
+              setState(() {
+                _enableButton = true;
+              });
+            }),
       ),
       body: Center(
         child: Column(
