@@ -200,7 +200,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                   });
                                 }
                               },
-                              onLongPress: () {},
+                              onLongPress: () {
+                                setState(() {
+                                  _selectedFiles.clear();
+                                  _selectedFiles.add(index);
+                                });
+                              },
                               leading: files[index].toString()[0] == "F"
                                   ? Icon(
                                       Icons.file_copy,
